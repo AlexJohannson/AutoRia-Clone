@@ -1,0 +1,10 @@
+services:
+  db:
+    image: mysql:8
+    env_file:
+      - .env
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: on-failure
