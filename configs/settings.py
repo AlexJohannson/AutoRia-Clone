@@ -36,8 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #my_apps
-    'sellers',
-    'listings',
+    'core',
+    'apps.sellers',
+    'apps.listings',
 ]
 
 MIDDLEWARE = [

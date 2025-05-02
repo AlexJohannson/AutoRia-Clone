@@ -2,10 +2,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from sellers.models import SellersModel
-from django.forms import model_to_dict
+from apps.sellers.models import SellersModel
 
-from sellers.serializers import SellerSerializer
+
+from apps.sellers.serializers import SellerSerializer
 
 
 
@@ -14,7 +14,7 @@ from sellers.serializers import SellerSerializer
 class SellersListCreateView(APIView):
     def get(self, *args, **kwargs):
         sellers = SellersModel.objects.all()
-        serializer = SellerSerializer(instance=sellers, many=True)
+        serializer = SellerSerializer(sellers, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
 
@@ -42,7 +42,7 @@ class SellersRetrieveUpdateDestroyView(APIView):
         try:
             seller = SellersModel.objects.get(pk=pk)
         except SellersModel.DoesNotExist:
-            return Response(f'Seller with ID {pk} not found')
+            return Response({f'Seller with ID {pk} not found'}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = SellerSerializer(seller)
 
@@ -58,10 +58,10 @@ class SellersRetrieveUpdateDestroyView(APIView):
         try:
             seller = SellersModel.objects.get(pk=pk)
         except SellersModel.DoesNotExist:
-            return Response(f'Seller with ID {pk} not found')
+            return Response({f'Seller with ID {pk} not found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = self.request.data
-        serializer = SellerSerializer(instance=seller, data=data)
+        serializer = SellerSerializer(seller, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -78,10 +78,10 @@ class SellersRetrieveUpdateDestroyView(APIView):
         try:
             seller = SellersModel.objects.get(pk=pk)
         except SellersModel.DoesNotExist:
-            return Response(f'Seller with ID {pk} not found')
+            return Response({f'Seller with ID {pk} not found'}, status=status.HTTP_404_NOT_FOUND)
 
         data = self.request.data
-        serializer = SellerSerializer(instance=seller, data=data)
+        serializer = SellerSerializer(seller, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -97,7 +97,7 @@ class SellersRetrieveUpdateDestroyView(APIView):
         try:
             SellersModel.objects.get(pk=pk).delete()
         except SellersModel.DoesNotExist:
-            return Response(f'Seller with ID {pk} not found')
+            return Response({f'Seller with ID {pk} not found'}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

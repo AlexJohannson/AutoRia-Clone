@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from sellers.models import SellersModel
+from apps.sellers.models import SellersModel
 
 
 class SellerSerializer(serializers.Serializer):
@@ -9,15 +9,17 @@ class SellerSerializer(serializers.Serializer):
     surname = serializers.CharField(max_length=150)
     age = serializers.IntegerField()
     male = serializers.CharField(max_length=100)
-    status = serializers.BooleanField()
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+
 
     def create(self, validated_data:dict):
-        seller = SellersModel.objects.create(**validated_data)
-        return seller
+        return SellersModel.objects.create(**validated_data)
+
 
     def update(self, instance, validated_data:dict):
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
         instance.save()
         return instance
 
