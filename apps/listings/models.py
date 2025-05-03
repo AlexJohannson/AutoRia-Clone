@@ -1,3 +1,20 @@
 from django.db import models
 
-# Create your models here.
+from core.models import BaseModel
+
+from apps.sellers.models import SellersModel
+
+
+class ListingSellersModel(BaseModel):
+    class Meta:
+        db_table = 'listings'
+
+
+    brand = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    year = models.IntegerField()
+    country = models.CharField(max_length=100)
+    region = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    price = models.FloatField()
+    seller = models.ForeignKey(SellersModel, on_delete=models.CASCADE, related_name='listings')

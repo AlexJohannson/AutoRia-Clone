@@ -12,3 +12,4 @@ class SellersModel(BaseModel):
     age = models.IntegerField()
     male = models.CharField(max_length=100)
 
+
