@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'core',
     'apps.sellers',
     'apps.listings',
+    'apps.view_listing',
 ]
 
 MIDDLEWARE = [
