@@ -29,6 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
+AUTH_USER_MODEL = 'user.UserModel'
 
 
 # Application definition
@@ -37,9 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
     #my_apps
     'core',
+    'apps.auth',
+    'apps.user',
     'apps.sellers',
     'apps.listings',
     'apps.view_listing',

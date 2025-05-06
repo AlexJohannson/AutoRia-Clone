@@ -4,6 +4,7 @@ from django.utils.timezone import now
 
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.listings.models import ListingSellersModel
@@ -14,6 +15,7 @@ from .serializers import ViewListingSerializer
 
 class CreateViewListingApiView(GenericAPIView):
     serializer_class = ViewListingSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         listings_id = request.data.get('listings_id')
@@ -21,8 +23,10 @@ class CreateViewListingApiView(GenericAPIView):
         try:
             listings_id = int(listings_id)
             listing = ListingSellersModel.objects.get(pk=listings_id)
+
         except (TypeError, ValueError):
             return Response({'error': 'Invalid listings_id'}, status=status.HTTP_400_BAD_REQUEST)
+
         except ListingSellersModel.DoesNotExist:
 
             return Response({'error': 'Listing not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -34,6 +38,7 @@ class CreateViewListingApiView(GenericAPIView):
 
 class ViewStatisticsApiView(GenericAPIView):
     serializer_class = ViewListingSerializer
+    permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         listings_id = request.query_params.get('listings_id')

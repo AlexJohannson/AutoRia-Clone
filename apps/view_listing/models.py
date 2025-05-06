@@ -9,11 +9,11 @@ class ViewListingModel(BaseModel):
     class Meta:
         db_table = 'view_listing'
 
-        
+
 
     listings = models.ForeignKey(ListingSellersModel, on_delete=models.CASCADE, related_name='view_listing')
     view = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
+
 
 
         

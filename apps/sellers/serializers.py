@@ -8,6 +8,15 @@ class SellerSerializer(serializers.ModelSerializer):
     listings = ListingSerializer(many=True, read_only=True)
     class Meta:
         model = SellersModel
-        fields = ('id', 'name', 'surname', 'age', 'male', 'updated_at', 'created_at', 'listings')
+        fields = (
+            'id',
+            'updated_at',
+            'created_at',
+            'listings'
+        )
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        return SellersModel.objects.create(user=user, **validated_data)
 
 

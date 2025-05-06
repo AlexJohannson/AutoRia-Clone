@@ -6,4 +6,8 @@ from .models import ViewListingModel
 class ViewListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ViewListingModel
-        fields = ('listings', 'created_at')
+        fields = (
+            'listings',
+            'created_at',
+            'updated_at',
+        )

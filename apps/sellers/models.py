@@ -2,14 +2,13 @@ from django.db import models
 
 from core.models import BaseModel
 
+from apps.user.models import UserModel
+
 
 class SellersModel(BaseModel):
     class Meta:
         db_table = 'sellers'
 
-    name = models.CharField(max_length=150)
-    surname = models.CharField(max_length=150)
-    age = models.IntegerField()
-    male = models.CharField(max_length=100)
+    user = models.OneToOneField(UserModel, on_delete=models.CASCADE, related_name='sellers')
 
 

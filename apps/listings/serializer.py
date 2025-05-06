@@ -1,9 +1,19 @@
 from rest_framework import serializers
 
-from apps.listings.models import ListingSellersModel
+from .models import ListingSellersModel
 
 
 class ListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingSellersModel
-        fields = ('id', 'brand', 'model', 'year', 'country', 'region', 'city', 'price', 'seller')
+        fields = (
+            'id',
+            'brand',
+            'model',
+            'year',
+            'country',
+            'region',
+            'city',
+            'price',
+            'seller'
+        )
