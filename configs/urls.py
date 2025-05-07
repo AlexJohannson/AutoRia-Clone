@@ -22,5 +22,4 @@ urlpatterns = [
   path('user', include('apps.user.urls')),
   path('sellers',include('apps.sellers.urls')),
   path('listings',include('apps.listings.urls')),
-  path('view_listing',include('apps.view_listing.urls')),
 ]

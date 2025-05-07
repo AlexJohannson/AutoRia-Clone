@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
-from apps.user.models import ProfileModel
+from .models import ProfileModel
 
 UserModel = get_user_model()
 class ProfileSerializer(serializers.ModelSerializer):
@@ -34,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id',
             'email',
             'password',
+            'status',
             'is_active',
             'is_staff',
             'is_superuser',
@@ -44,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             'id',
+            'status',
             'is_active',
             'is_staff',
             'is_superuser',
@@ -58,19 +60,19 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+
         profile_data = validated_data.pop('profile')
         user = UserModel.objects.create_user(**validated_data)
         ProfileModel.objects.create(user=user, **profile_data)
         return user
 
     def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', None)
 
+        profile_data = validated_data.pop('profile', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-
 
         if profile_data:
             profile = instance.profile

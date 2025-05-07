@@ -9,7 +9,6 @@ class ListingSellersModel(BaseModel):
     class Meta:
         db_table = 'listings'
 
-
     brand = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
     year = models.IntegerField()
@@ -18,3 +17,9 @@ class ListingSellersModel(BaseModel):
     city = models.CharField(max_length=100)
     price = models.FloatField()
     seller = models.ForeignKey(SellersModel, on_delete=models.CASCADE, related_name='listings')
+    is_active = models.BooleanField(default=True)
+    views = models.IntegerField(default=0)
+    daily_views = models.IntegerField(default=0)
+    weekly_views = models.IntegerField(default=0)
+    monthly_views = models.IntegerField(default=0)
+    last_view_date = models.DateField(null=True, blank=True)

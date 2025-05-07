@@ -3,7 +3,7 @@ from django.db import models
 
 from core.models import BaseModel
 
-from apps.user.managers import UserManager
+from .managers import UserManager
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
@@ -13,6 +13,12 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    status = models.CharField(max_length=10,
+                              choices=[
+                                  ('active', 'Active'),
+                                  ('blocked', 'Blocked')],
+                              default='active'
+                              )
 
     USERNAME_FIELD = 'email'
 

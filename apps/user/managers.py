@@ -2,7 +2,9 @@ from django.contrib.auth.base_user import BaseUserManager
 
 
 class UserManager(BaseUserManager):
+
     def create_user(self, email=None, password=None, **extra_fields):
+
         if not email:
             raise ValueError('User must have an email address')
 
@@ -15,13 +17,16 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
+
         return user
 
 
     def create_superuser(self, email=None, password=None, **extra_fields):
+
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('status', 'active')
 
         if extra_fields.get('is_active') is not True:
             raise ValueError('Superuser must be is_active')
@@ -33,4 +38,5 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must be is_superuser')
 
         user = self.create_user(email=email, password=password, **extra_fields)
+
         return user

@@ -15,5 +15,10 @@ class ListingSerializer(serializers.ModelSerializer):
             'region',
             'city',
             'price',
-            'seller'
+            'seller',
+            'views',
+            'daily_views',
+            'weekly_views',
+            'monthly_views',
+            'last_view_date'
         )
