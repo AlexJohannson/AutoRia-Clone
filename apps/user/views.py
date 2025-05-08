@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -32,7 +32,7 @@ class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
 
 class UserBlockUnblockView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminOrSuperuser]
 
     def post(self, request, pk):
         user = get_object_or_404(UserModel, pk=pk)

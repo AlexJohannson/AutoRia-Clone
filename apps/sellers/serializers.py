@@ -3,16 +3,19 @@ from rest_framework import serializers
 from apps.base_account.models import BaseAccountModel
 from apps.listings.serializer import ListingSerializer
 from apps.sellers.models import SellersModel
+from apps.user.serializers import UserSerializer
 
 
 class SellerSerializer(serializers.ModelSerializer):
     listings = ListingSerializer(many=True, read_only=True)
+    user = UserSerializer(read_only=True)
     account_type = serializers.SerializerMethodField()
 
     class Meta:
         model = SellersModel
         fields = (
             'id',
+            'user',
             'updated_at',
             'created_at',
             'listings',

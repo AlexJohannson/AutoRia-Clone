@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'apps.user',
     'apps.sellers',
     'apps.listings',
+    'apps.car_brand',
+    'apps.car_brand_model',
     'apps.base_account',
     'apps.premium_account',
 ]
