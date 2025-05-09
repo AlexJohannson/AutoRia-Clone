@@ -3,6 +3,7 @@ from django.db import models
 from core.models import BaseModel
 
 from apps.car_brand.models import CarBrandModel
+from apps.car_model.models import CarModelModel
 from apps.sellers.models import SellersModel
 
 
@@ -11,7 +12,7 @@ class ListingSellersModel(BaseModel):
         db_table = 'listings'
 
     brand = models.ForeignKey(CarBrandModel, on_delete=models.CASCADE, related_name='listings')
-    model = models.CharField(max_length=100)
+    car_model = models.ForeignKey(CarModelModel, on_delete=models.CASCADE, related_name='listings')
     year = models.IntegerField()
     country = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
