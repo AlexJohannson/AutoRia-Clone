@@ -1,9 +1,8 @@
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from ..base_account.models import BaseAccountModel
 from ..premium_account.models import PremiumAccountModel
@@ -42,7 +41,7 @@ class SellersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 
 
-class PremiumAccountPurchaseApiView(APIView):
+class PremiumAccountPurchaseApiView(GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

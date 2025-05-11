@@ -5,5 +5,5 @@ from .views import PremiumAccountPurchaseApiView, SellersListCreateView, Sellers
 urlpatterns = [
     path('', SellersListCreateView.as_view(), name='sellers_list'),
     path('/<int:pk>', SellersRetrieveUpdateDestroyView.as_view(), name='sellers_detail'),
-    path('/buy-premium', PremiumAccountPurchaseApiView.as_view(), name='buy_premium'),
+    path('/buy_premium', PremiumAccountPurchaseApiView.as_view(), name='buy_premium'),
 ]

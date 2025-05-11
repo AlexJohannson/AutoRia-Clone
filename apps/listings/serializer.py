@@ -11,10 +11,12 @@ class ListingSerializer(serializers.ModelSerializer):
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=CarBrandModel.objects.all(), write_only=True
     )
+
     car_model = CarModelSerializer(read_only=True)
     car_model_id = serializers.PrimaryKeyRelatedField(
         queryset=CarModelModel.objects.all(), write_only=True
     )
+
 
     class Meta:
         model = ListingSellersModel
@@ -39,6 +41,8 @@ class ListingSerializer(serializers.ModelSerializer):
 
     def get_brand(self, obj):
         return obj.brand.brand if obj.brand else None
+
+
 
     def create(self, validated_data):
         validated_data['brand'] = validated_data.pop('brand_id')
