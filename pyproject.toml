@@ -9,7 +9,6 @@ readme = "README.md"
 python = "^3.12"
 djangorestframework = "^3.16.0"
 mysqlclient = "^2.2.7"
-django-dotenv = "^1.4.2"
 djangorestframework-simplejwt = "^5.5.0"
 
 
