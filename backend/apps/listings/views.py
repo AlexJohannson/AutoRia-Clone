@@ -5,7 +5,7 @@ from django.utils.timezone import now
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -13,7 +13,7 @@ from apps.sellers.models import SellersModel
 
 from .models import ListingSellersModel
 from .permissions import IsOwnerOrAdmin
-from .serializer import ListingSerializer
+from .serializer import ListingPhotoSerializer, ListingSerializer
 
 
 class ListingListCreateView(ListCreateAPIView):
@@ -104,5 +104,17 @@ class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
                 })
 
             return Response(data)
+
+
+class AddPhotoToListingView(UpdateAPIView):
+    serializer_class = ListingPhotoSerializer
+    queryset = ListingSellersModel.objects.all()
+    permission_classes = [IsOwnerOrAdmin, IsAuthenticated]
+    http_method_names = ['put']
+
+    def perform_update(self, serializer):
+        listing = self.get_object()
+        listing.photo.delete()
+        super().perform_update(serializer)
 
 

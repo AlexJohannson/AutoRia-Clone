@@ -31,7 +31,9 @@ class ListingSerializer(serializers.ModelSerializer):
             'region',
             'city',
             'price',
+            'description',
             'seller',
+            'photo',
             'views',
             'daily_views',
             'weekly_views',
@@ -48,3 +50,9 @@ class ListingSerializer(serializers.ModelSerializer):
         validated_data['brand'] = validated_data.pop('brand_id')
         validated_data['car_model'] = validated_data.pop('car_model_id')
         return super().create(validated_data)
+
+
+class ListingPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingSellersModel
+        fields = ('photo',)

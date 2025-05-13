@@ -1,0 +1,2 @@
+class JWTException(Exception):
+    pass

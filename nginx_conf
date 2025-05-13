@@ -10,7 +10,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://app:8000/;
+        proxy_pass http://app:8000/api/;
         proxy_set_header Host $host;
     }
 }

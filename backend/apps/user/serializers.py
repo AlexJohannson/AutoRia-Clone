@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
+from django.db.transaction import atomic
 
 from rest_framework import serializers
+
+from core.services.email_service import EmailService
 
 from .models import ProfileModel
 
@@ -58,12 +61,13 @@ class UserSerializer(serializers.ModelSerializer):
                 'write_only': True
             },
         }
-
+    @atomic
     def create(self, validated_data):
 
         profile_data = validated_data.pop('profile')
         user = UserModel.objects.create_user(**validated_data)
         ProfileModel.objects.create(user=user, **profile_data)
+        EmailService.register(user)
         return user
 
     def update(self, instance, validated_data):
