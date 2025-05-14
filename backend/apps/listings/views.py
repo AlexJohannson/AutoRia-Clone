@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from django.db.models import Avg
 from django.utils.timezone import now
 
 from rest_framework import status
@@ -8,6 +7,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from core.services.exchange_servise import get_exchange_rates
+from core.tasks import avg_price_task, update_exchange_rates
 
 from apps.sellers.models import SellersModel
 
@@ -30,14 +32,49 @@ class ListingListCreateView(ListCreateAPIView):
     def perform_create(self, serializer):
         seller = SellersModel.objects.get(user=self.request.user)
 
-
         if hasattr(seller, 'base_account'):
             listing_count = ListingSellersModel.objects.filter(seller=seller).count()
             if listing_count >= 1:
                 raise ValidationError("Base account can only create one listing!", status.HTTP_400_BAD_REQUEST)
 
-        serializer.save(seller=seller)
 
+        try:
+            price = float(self.request.data.get('price'))
+        except (TypeError, ValueError):
+            raise ValidationError("Invalid or missing price.")
+
+        currency = self.request.data.get('currency')
+        if currency not in ['USD', 'EUR', 'UAH']:
+            raise ValidationError("Invalid or missing currency.")
+
+        rates = get_exchange_rates()
+
+
+        if currency == 'USD':
+            price_usd = price
+            price_uah = round(price * rates['USD_UAH'], 2)
+            price_eur = round(price * rates['USD_EUR'], 2)
+        elif currency == 'EUR':
+            price_eur = price
+            price_uah = round(price * rates['EUR_UAH'], 2)
+            price_usd = round(price * rates['EUR_USD'], 2)
+        elif currency == 'UAH':
+            price_uah = price
+            price_usd = round(price / rates['USD_UAH'], 2)
+            price_eur = round(price / rates['EUR_UAH'], 2)
+
+
+        serializer.save(
+            seller=seller,
+            currency=currency,
+            price_uah=price_uah,
+            price_usd=price_usd,
+            price_eur=price_eur,
+            exchange_rate_used=rates['updated']
+        )
+
+        update_exchange_rates.apply_async()
+        avg_price_task.apply_async()
 
 class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ListingSerializer
@@ -52,58 +89,41 @@ class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return ListingSellersModel.objects.filter(is_active=True)
 
-
-
     def retrieve(self, request, *args, **kwargs):
-            instance = self.get_object()
-            today = now().date()
+        instance = self.get_object()
+        today = now().date()
 
 
-            if hasattr(instance.seller, 'premium_account'):
-                instance.views += 1
+        is_premium = hasattr(instance.seller, 'premium_account')
 
-                if instance.last_view_date == today:
-                    instance.daily_views += 1
-                else:
-                    instance.daily_views = 1
+        if is_premium:
 
-                if instance.last_view_date and instance.last_view_date >= today - timedelta(days=7):
-                    instance.weekly_views += 1
-                else:
-                    instance.weekly_views = 1
+            instance.views += 1
+            if instance.last_view_date == today:
+                instance.daily_views += 1
+            else:
+                instance.daily_views = 1
 
-                if instance.last_view_date and instance.last_view_date >= today - timedelta(days=30):
-                    instance.monthly_views += 1
-                else:
-                    instance.monthly_views = 1
+            if instance.last_view_date and instance.last_view_date >= today - timedelta(days=7):
+                instance.weekly_views += 1
+            else:
+                instance.weekly_views = 1
 
-                instance.last_view_date = today
-                instance.save()
+            if instance.last_view_date and instance.last_view_date >= today - timedelta(days=30):
+                instance.monthly_views += 1
+            else:
+                instance.monthly_views = 1
 
-            serializer = self.get_serializer(instance, context={'request': request})
-            data = serializer.data
+            instance.last_view_date = today
+            instance.save(update_fields=['views', 'daily_views', 'weekly_views', 'monthly_views', 'last_view_date'])
 
 
-            if hasattr(instance.seller, 'premium_account'):
-                city_avg = ListingSellersModel.objects.filter(
-                    city=instance.city, is_active=True
-                ).aggregate(Avg('price'))['price__avg']
+        serializer = self.get_serializer(instance, context={'request': request})
+        data = serializer.data
 
-                region_avg = ListingSellersModel.objects.filter(
-                    region=instance.region, is_active=True
-                ).aggregate(Avg('price'))['price__avg']
+        return Response(data)
 
-                country_avg = ListingSellersModel.objects.filter(
-                    country=instance.country, is_active=True
-                ).aggregate(Avg('price'))['price__avg']
 
-                data.update({
-                    'avg_city_price': round(city_avg, 2) if city_avg else None,
-                    'avg_region_price': round(region_avg, 2) if region_avg else None,
-                    'avg_country_price': round(country_avg, 2) if country_avg else None,
-                })
-
-            return Response(data)
 
 
 class AddPhotoToListingView(UpdateAPIView):

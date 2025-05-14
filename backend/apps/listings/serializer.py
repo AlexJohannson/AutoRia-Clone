@@ -1,3 +1,5 @@
+from django.db.models import Avg
+
 from rest_framework import serializers
 
 from ..car_brand.models import CarBrandModel
@@ -17,6 +19,15 @@ class ListingSerializer(serializers.ModelSerializer):
         queryset=CarModelModel.objects.all(), write_only=True
     )
 
+    views = serializers.IntegerField(read_only=True)
+    daily_views = serializers.IntegerField(read_only=True)
+    weekly_views = serializers.IntegerField(read_only=True)
+    monthly_views = serializers.IntegerField(read_only=True)
+    last_view_date = serializers.DateField(read_only=True)
+    price = serializers.FloatField()
+    avg_city_price = serializers.FloatField(read_only=True)
+    avg_region_price = serializers.FloatField(read_only=True)
+    avg_country_price = serializers.FloatField(read_only=True)
 
     class Meta:
         model = ListingSellersModel
@@ -31,6 +42,11 @@ class ListingSerializer(serializers.ModelSerializer):
             'region',
             'city',
             'price',
+            'currency',
+            'price_usd',
+            'price_eur',
+            'price_uah',
+            'exchange_rate_used',
             'description',
             'seller',
             'photo',
@@ -38,18 +54,65 @@ class ListingSerializer(serializers.ModelSerializer):
             'daily_views',
             'weekly_views',
             'monthly_views',
-            'last_view_date'
+            'last_view_date',
+            'avg_city_price',
+            'avg_region_price',
+            'avg_country_price',
         )
 
     def get_brand(self, obj):
         return obj.brand.brand if obj.brand else None
 
-
-
     def create(self, validated_data):
         validated_data['brand'] = validated_data.pop('brand_id')
         validated_data['car_model'] = validated_data.pop('car_model_id')
         return super().create(validated_data)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+
+        request = self.context.get('request')
+        if not request:
+            return data
+
+        is_premium = hasattr(instance.seller, 'premium_account')
+
+        if not is_premium:
+
+            for field in [
+                'views',
+                'daily_views',
+                'weekly_views',
+                'monthly_views',
+                'last_view_date',
+                'avg_city_price',
+                'avg_region_price',
+                'avg_country_price'
+            ]:
+                data.pop(field, None)
+        else:
+
+            avg_city_price = ListingSellersModel.objects.filter(
+                city=instance.city, is_active=True
+            ).aggregate(Avg('price'))['price__avg']
+
+            avg_region_price = ListingSellersModel.objects.filter(
+                region=instance.region, is_active=True
+            ).aggregate(Avg('price'))['price__avg']
+
+            avg_country_price = ListingSellersModel.objects.filter(
+                country=instance.country, is_active=True
+            ).aggregate(Avg('price'))['price__avg']
+
+            data.update({
+                'avg_city_price': round(avg_city_price, 2) if avg_city_price else 0.0,
+                'avg_region_price': round(avg_region_price, 2) if avg_region_price else 0.0,
+                'avg_country_price': round(avg_country_price, 2) if avg_country_price else 0.0,
+            })
+
+        return data
+
 
 
 class ListingPhotoSerializer(serializers.ModelSerializer):
