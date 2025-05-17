@@ -1,20 +1,20 @@
-from datetime import timedelta
-
-from django.utils.timezone import now
+from django.core.cache import cache
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from core.services.exchange_servise import get_exchange_rates
-from core.tasks import avg_price_task, update_exchange_rates
+from core.services.listing_service import calculate_prices, check_seller_listing_limit, update_listing_views
+from core.services.listing_validation_service import contains_forbidden_word
+from core.tasks import avg_price_task, send_blocked_listing_email_task, update_exchange_rates
 
 from apps.sellers.models import SellersModel
 
 from .models import ListingSellersModel
-from .permissions import IsOwnerOrAdmin
+from .permissions import IsAdminOrSuperUser, IsOwnerOrAdmin
 from .serializer import ListingPhotoSerializer, ListingSerializer
 
 
@@ -24,19 +24,19 @@ class ListingListCreateView(ListCreateAPIView):
     def get_queryset(self):
         return ListingSellersModel.objects.filter(is_active=True)
 
+
+
     def get_permissions(self):
-        if self.request.method == 'POST':
-            return [IsAuthenticated()]
-        return [AllowAny()]
+        return [IsAuthenticated()] if self.request.method == 'POST' else [AllowAny()]
+
+
 
     def perform_create(self, serializer):
         seller = SellersModel.objects.get(user=self.request.user)
 
-        if hasattr(seller, 'base_account'):
-            listing_count = ListingSellersModel.objects.filter(seller=seller).count()
-            if listing_count >= 1:
-                raise ValidationError("Base account can only create one listing!", status.HTTP_400_BAD_REQUEST)
-
+        can_create, error_message = check_seller_listing_limit(seller)
+        if not can_create:
+            raise ValidationError(error_message, status.HTTP_400_BAD_REQUEST)
 
         try:
             price = float(self.request.data.get('price'))
@@ -47,83 +47,72 @@ class ListingListCreateView(ListCreateAPIView):
         if currency not in ['USD', 'EUR', 'UAH']:
             raise ValidationError("Invalid or missing currency.")
 
-        rates = get_exchange_rates()
+        price_usd, price_eur, price_uah = calculate_prices(price, currency)
+
+        description = self.request.data.get('description', '')
+        seller_key = f'bad_word_attempts_{seller.id}'
 
 
-        if currency == 'USD':
-            price_usd = price
-            price_uah = round(price * rates['USD_UAH'], 2)
-            price_eur = round(price * rates['USD_EUR'], 2)
-        elif currency == 'EUR':
-            price_eur = price
-            price_uah = round(price * rates['EUR_UAH'], 2)
-            price_usd = round(price * rates['EUR_USD'], 2)
-        elif currency == 'UAH':
-            price_uah = price
-            price_usd = round(price / rates['USD_UAH'], 2)
-            price_eur = round(price / rates['EUR_UAH'], 2)
+        if contains_forbidden_word(description):
+            attempts = cache.get(seller_key, 0) + 1
+            cache.set(seller_key, attempts, timeout=3600)
+
+            if attempts >= 3:
+
+                listing = serializer.save(
+                    seller=seller,
+                    currency=currency,
+                    price=price,
+                    price_usd=price_usd,
+                    price_eur=price_eur,
+                    price_uah=price_uah,
+                    exchange_rate_used=get_exchange_rates()['updated'],
+                    is_active=False,
+                    bad_word_attempts=3,
+                )
+
+                send_blocked_listing_email_task.delay(listing.id)
+
+                cache.delete(seller_key)
+                raise ValidationError("Listing is now inactive due to forbidden words. Manager notified.")
+            else:
+                attempts_left = 3 - attempts
+                raise ValidationError(f"Listing contains forbidden words. You have {attempts_left} attempts left.")
 
 
         serializer.save(
             seller=seller,
             currency=currency,
-            price_uah=price_uah,
+            price=price,
             price_usd=price_usd,
             price_eur=price_eur,
-            exchange_rate_used=rates['updated']
+            price_uah=price_uah,
+            exchange_rate_used=get_exchange_rates()['updated'],
+            is_active=True,
+            bad_word_attempts=0,
         )
 
         update_exchange_rates.apply_async()
         avg_price_task.apply_async()
+
+
 
 class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ListingSerializer
     http_method_names = ['get', 'put', 'delete']
 
     def get_permissions(self):
-
-        if self.request.method == 'GET':
-            return [AllowAny()]
-        return [IsAuthenticated(), IsOwnerOrAdmin()]
+        return [AllowAny()] if self.request.method == 'GET' else [IsAuthenticated(), IsOwnerOrAdmin()]
 
     def get_queryset(self):
         return ListingSellersModel.objects.filter(is_active=True)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        today = now().date()
-
-
-        is_premium = hasattr(instance.seller, 'premium_account')
-
-        if is_premium:
-
-            instance.views += 1
-            if instance.last_view_date == today:
-                instance.daily_views += 1
-            else:
-                instance.daily_views = 1
-
-            if instance.last_view_date and instance.last_view_date >= today - timedelta(days=7):
-                instance.weekly_views += 1
-            else:
-                instance.weekly_views = 1
-
-            if instance.last_view_date and instance.last_view_date >= today - timedelta(days=30):
-                instance.monthly_views += 1
-            else:
-                instance.monthly_views = 1
-
-            instance.last_view_date = today
-            instance.save(update_fields=['views', 'daily_views', 'weekly_views', 'monthly_views', 'last_view_date'])
-
+        update_listing_views(instance)
 
         serializer = self.get_serializer(instance, context={'request': request})
-        data = serializer.data
-
-        return Response(data)
-
-
+        return Response(serializer.data)
 
 
 class AddPhotoToListingView(UpdateAPIView):
@@ -137,4 +126,18 @@ class AddPhotoToListingView(UpdateAPIView):
         listing.photo.delete()
         super().perform_update(serializer)
 
+
+
+class ListInactiveListingView(ListAPIView):
+    serializer_class = ListingSerializer
+    permission_classes = [IsAdminOrSuperUser]
+    queryset = ListingSellersModel.objects.filter(is_active=False)
+    http_method_names = ['get']
+
+
+class DeleteInactiveListingsView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ListingSerializer
+    queryset = ListingSellersModel.objects.filter(is_active=False)
+    permission_classes = [IsAdminOrSuperUser]
+    http_method_names = ['delete']
 

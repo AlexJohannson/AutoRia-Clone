@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<h2>Listing № {{ listing_id }} is blocked</h2>
+    <p>Seller: {{ seller_name }}</p>
+    <p>Text of listing:</p>
+    <p>{{ description }}</p>
+    <p>Reason: use of forbidden words.</p>
+    <p>Please check this listing</p>
+{% endblock %}
+
+

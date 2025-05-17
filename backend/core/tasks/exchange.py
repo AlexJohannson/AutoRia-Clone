@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from rest_framework.request import Request
-
+import requests
 from configs.celery import app
 from core.exchange_state import exchange_state
 
@@ -9,7 +8,7 @@ from core.exchange_state import exchange_state
 @app.task
 def update_exchange_rates():
     url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
-    response = Request.get(url)
+    response = requests.get(url)
     data = response.json()
 
     rates = {}

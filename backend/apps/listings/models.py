@@ -38,6 +38,8 @@ class ListingSellersModel(BaseModel):
     weekly_views = models.IntegerField(default=0)
     monthly_views = models.IntegerField(default=0)
     last_view_date = models.DateField(null=True, blank=True)
+    bad_word_attempts = models.IntegerField(default=0)
+
 
     def delete(self, *args, **kwargs):
 

@@ -1,2 +1,5 @@
 from .avg_price_task import avg_price_task
 from .exchange import update_exchange_rates
+from .send_blocked_listing_email_task import send_blocked_listing_email_task
+from .send_welcome_email_task import send_welcome_email_task
+

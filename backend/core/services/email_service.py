@@ -10,7 +10,7 @@ from core.services.jwt_service import ActivateToken, JWTService, RecoveryToken
 class EmailService:
     @staticmethod
     @app.task
-    def __send_email(to:str, template_name:str, context:dict, subject:str)->None:
+    def send_email(to:str, template_name:str, context:dict, subject:str)->None:
         template = get_template(template_name)
         html_content = template.render(context)
         msg = EmailMultiAlternatives(
@@ -26,7 +26,7 @@ class EmailService:
     def register(cls, user):
         token = JWTService.create_token(user, ActivateToken)
         url = f'http://localhost/auth/activate/{token}'
-        cls.__send_email.delay(
+        cls.send_email.delay(
             to=user.email,
             template_name='register.html',
             context={'name':user.profile.name, 'url':url},
@@ -37,9 +37,14 @@ class EmailService:
     def recovery(cls, user):
         token = JWTService.create_token(user, RecoveryToken)
         url = f'http://localhost/auth/recovery/{token}'
-        cls.__send_email.delay(
+        cls.send_email.delay(
             to=user.email,
             template_name='recovery.html',
             context={'name': user.profile.name, 'url': url},
             subject='Recovery'
         )
+
+
+
+
+

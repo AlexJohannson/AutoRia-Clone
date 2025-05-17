@@ -4,6 +4,7 @@ from django.db.transaction import atomic
 from rest_framework import serializers
 
 from core.services.email_service import EmailService
+from core.tasks.send_welcome_email_task import send_welcome_email_task
 
 from .models import ProfileModel
 
@@ -68,6 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = UserModel.objects.create_user(**validated_data)
         ProfileModel.objects.create(user=user, **profile_data)
         EmailService.register(user)
+        send_welcome_email_task.apply_async(kwargs={'user_id': user.id}, countdown=20)
         return user
 
     def update(self, instance, validated_data):

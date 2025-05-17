@@ -30,6 +30,7 @@ DEBUG = os.environ.get('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'user.UserModel'
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
 
 
 # Application definition
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'apps.car_model',
     'apps.base_account',
     'apps.premium_account',
+    'apps.forbiddenword',
 ]
 
 MIDDLEWARE = [

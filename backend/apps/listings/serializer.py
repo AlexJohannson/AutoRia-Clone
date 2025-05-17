@@ -58,10 +58,13 @@ class ListingSerializer(serializers.ModelSerializer):
             'avg_city_price',
             'avg_region_price',
             'avg_country_price',
+            'is_active',
+            'bad_word_attempts',
         )
 
     def get_brand(self, obj):
         return obj.brand.brand if obj.brand else None
+
 
     def create(self, validated_data):
         validated_data['brand'] = validated_data.pop('brand_id')
@@ -70,16 +73,14 @@ class ListingSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-
-
         request = self.context.get('request')
+
         if not request:
             return data
 
         is_premium = hasattr(instance.seller, 'premium_account')
 
         if not is_premium:
-
             for field in [
                 'views',
                 'daily_views',
@@ -92,18 +93,9 @@ class ListingSerializer(serializers.ModelSerializer):
             ]:
                 data.pop(field, None)
         else:
-
-            avg_city_price = ListingSellersModel.objects.filter(
-                city=instance.city, is_active=True
-            ).aggregate(Avg('price'))['price__avg']
-
-            avg_region_price = ListingSellersModel.objects.filter(
-                region=instance.region, is_active=True
-            ).aggregate(Avg('price'))['price__avg']
-
-            avg_country_price = ListingSellersModel.objects.filter(
-                country=instance.country, is_active=True
-            ).aggregate(Avg('price'))['price__avg']
+            avg_city_price = ListingSellersModel.objects.filter(city=instance.city, is_active=True).aggregate(Avg('price'))['price__avg']
+            avg_region_price = ListingSellersModel.objects.filter(region=instance.region, is_active=True).aggregate(Avg('price'))['price__avg']
+            avg_country_price = ListingSellersModel.objects.filter(country=instance.country, is_active=True).aggregate(Avg('price'))['price__avg']
 
             data.update({
                 'avg_city_price': round(avg_city_price, 2) if avg_city_price else 0.0,
@@ -112,6 +104,8 @@ class ListingSerializer(serializers.ModelSerializer):
             })
 
         return data
+
+
 
 
 
