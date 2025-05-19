@@ -6,7 +6,7 @@ from apps.listings.models import ListingSellersModel
 
 
 @app.task
-def send_blocked_listing_email_task(listings_id):
+def send_blocked_listing_due_bad_words_email_task(listings_id):
 
     try:
         listings = ListingSellersModel.objects.get(id=listings_id)

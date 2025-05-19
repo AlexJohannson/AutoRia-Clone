@@ -4,6 +4,10 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveU
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.tasks.send_premium_activate_email_task import send_premium_activate_email_task
+from core.tasks.send_seller_create_email_task import send_seller_create_email_task
+from core.tasks.send_seller_deleted_email_task import send_seller_deleted_email_task
+
 from ..base_account.models import BaseAccountModel
 from ..premium_account.models import PremiumAccountModel
 from .models import SellersModel
@@ -31,6 +35,8 @@ class SellersListCreateView(ListCreateAPIView):
         if not hasattr(seller, 'base_account'):
             BaseAccountModel.objects.create(seller=seller)
 
+        send_seller_create_email_task.delay(user.email, user.profile.name)
+
 
 
 class SellersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
@@ -38,6 +44,16 @@ class SellersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = SellerSerializer
     permission_classes = [IsSellerOrAdmin]
     http_method_names = ['get', 'delete']
+
+    def delete(self, request, *args, **kwargs):
+        seller = self.get_object()
+        email = seller.user.email
+        name = seller.user.profile.name
+
+        send_seller_deleted_email_task.delay(email, name)
+
+        self.perform_destroy(seller)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
@@ -54,6 +70,7 @@ class PremiumAccountPurchaseApiView(GenericAPIView):
             return Response({'error': 'You already have a premium account'}, status=status.HTTP_400_BAD_REQUEST)
 
         premium_account = PremiumAccountModel.objects.create(seller=seller)
+        send_premium_activate_email_task(seller.user.email, seller.user.profile.name)
 
         seller.base_account.delete()
         seller.premium_account = premium_account

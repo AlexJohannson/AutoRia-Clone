@@ -9,7 +9,13 @@ from rest_framework.response import Response
 from core.services.exchange_servise import get_exchange_rates
 from core.services.listing_service import calculate_prices, check_seller_listing_limit, update_listing_views
 from core.services.listing_validation_service import contains_forbidden_word
-from core.tasks import avg_price_task, send_blocked_listing_email_task, update_exchange_rates
+from core.tasks import (
+    avg_price_task,
+    send_blocked_listing_due_bad_words_email_task,
+    send_listing_deleted_email_task,
+    send_listing_publication_email_task,
+    update_exchange_rates,
+)
 
 from apps.sellers.models import SellersModel
 
@@ -71,7 +77,7 @@ class ListingListCreateView(ListCreateAPIView):
                     bad_word_attempts=3,
                 )
 
-                send_blocked_listing_email_task.delay(listing.id)
+                send_blocked_listing_due_bad_words_email_task.delay(listing.id)
 
                 cache.delete(seller_key)
                 raise ValidationError("Listing is now inactive due to forbidden words. Manager notified.")
@@ -80,7 +86,7 @@ class ListingListCreateView(ListCreateAPIView):
                 raise ValidationError(f"Listing contains forbidden words. You have {attempts_left} attempts left.")
 
 
-        serializer.save(
+        listings = serializer.save(
             seller=seller,
             currency=currency,
             price=price,
@@ -94,6 +100,13 @@ class ListingListCreateView(ListCreateAPIView):
 
         update_exchange_rates.apply_async()
         avg_price_task.apply_async()
+        send_listing_publication_email_task.delay(
+            seller.user.email,
+            seller.user.profile.name,
+            listings.brand.brand,
+            listings.car_model.car_model,
+            price=str(listings.price),
+        )
 
 
 
@@ -113,6 +126,18 @@ class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
         serializer = self.get_serializer(instance, context={'request': request})
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        listing = self.get_object()
+        send_listing_deleted_email_task.delay(
+            listing.seller.user.email,
+            listing.seller.user.profile.name,
+            listing.brand.brand,
+            listing.car_model.car_model,
+            price=str(listing.price),
+        )
+        self.perform_destroy(listing)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AddPhotoToListingView(UpdateAPIView):

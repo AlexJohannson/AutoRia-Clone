@@ -6,6 +6,10 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveU
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from core.tasks.send_user_blocked_email_task import send_user_blocked_email_task
+from core.tasks.send_user_delete_email_task import send_user_delete_email_task
+from core.tasks.send_user_unblocked_email_task import send_user_unblocked_email_task
+
 from ..listings.models import ListingSellersModel
 from ..sellers.models import SellersModel
 from .permissions import IsAdminOrSuperuser, IsOwnerOrAdmin, IsSuperUserOnly
@@ -30,6 +34,14 @@ class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrAdmin]
     http_method_names = ['get', 'put', 'delete']
 
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        email = user.email
+        name = user.profile.name
+        send_user_delete_email_task.delay(email, name)
+        self.perform_destroy(user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class UserBlockUnblockView(GenericAPIView):
     def patch(self, request, pk):
@@ -53,6 +65,13 @@ class UserBlockUnblockView(GenericAPIView):
             seller.is_active = user.is_active
             seller.save()
             ListingSellersModel.objects.filter(seller=seller).update(is_active=user.is_active)
+
+        email = user.email
+        name = user.profile.name
+        if action == 'block':
+            send_user_blocked_email_task.delay(email, name)
+        else:
+            send_user_unblocked_email_task.delay(email, name)
 
         return Response({'message': f'User {user.profile.name} - {action}ed successfully', 'status': user.status})
 
