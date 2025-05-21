@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'apps.base_account',
     'apps.premium_account',
     'apps.forbiddenword',
+    'apps.auto_salon',
+    'apps.salon_role',
+    'apps.invitation_to_auto_salon',
 ]
 
 MIDDLEWARE = [

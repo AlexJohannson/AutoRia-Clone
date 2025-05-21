@@ -28,6 +28,9 @@ urlpatterns = [
   path('api/car_brand',include('apps.car_brand.urls')),
   path('api/car_model',include('apps.car_model.urls')),
   path('api/forbidden_word', include('apps.forbiddenword.urls')),
+  path('api/auto_salon', include('apps.auto_salon.urls')),
+  path('api/salon_role', include('apps.salon_role.urls')),
+  path('api/invitation_to_auto_salon', include('apps.invitation_to_auto_salon.urls')),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
