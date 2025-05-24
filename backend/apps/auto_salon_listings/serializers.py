@@ -2,22 +2,23 @@ from django.db.models import Avg
 
 from rest_framework import serializers
 
-from ..car_brand.models import CarBrandModel
-from ..car_model.models import CarModelModel
-from ..car_model.serializer import CarModelSerializer
-from .models import ListingSellersModel
+from apps.auto_salon_listings.models import AutoSalonListingModel
+from apps.car_brand.models import CarBrandModel
+from apps.car_model.models import CarModelModel
+from apps.car_model.serializer import CarModelSerializer
 
 
-class ListingSerializer(serializers.ModelSerializer):
-
+class AutoSalonListingSerializer(serializers.ModelSerializer):
     brand = serializers.SerializerMethodField()
     brand_id = serializers.PrimaryKeyRelatedField(
-        queryset=CarBrandModel.objects.all(), write_only=True
+        queryset=CarBrandModel.objects.all(),
+        write_only=True,
     )
 
     car_model = CarModelSerializer(read_only=True)
     car_model_id = serializers.PrimaryKeyRelatedField(
-        queryset=CarModelModel.objects.all(), write_only=True
+        queryset=CarModelModel.objects.all(),
+        write_only=True,
     )
 
     views = serializers.IntegerField(read_only=True)
@@ -31,7 +32,7 @@ class ListingSerializer(serializers.ModelSerializer):
     avg_country_price = serializers.FloatField(read_only=True)
 
     class Meta:
-        model = ListingSellersModel
+        model = AutoSalonListingModel
         fields = (
             'id',
             'brand',
@@ -49,7 +50,7 @@ class ListingSerializer(serializers.ModelSerializer):
             'price_uah',
             'exchange_rate_used',
             'description',
-            'seller',
+            'auto_salon',
             'photo',
             'views',
             'daily_views',
@@ -62,12 +63,8 @@ class ListingSerializer(serializers.ModelSerializer):
             'is_active',
             'bad_word_attempts',
         )
-
-
-
     def get_brand(self, obj):
         return obj.brand.brand if obj.brand else None
-
 
     def create(self, validated_data):
         validated_data['brand'] = validated_data.pop('brand_id')
@@ -81,28 +78,25 @@ class ListingSerializer(serializers.ModelSerializer):
         if not request:
             return data
 
-        is_premium = hasattr(instance.seller, 'premium_account')
+
+        is_premium = hasattr(instance.auto_salon, 'premium_account')
 
         if not is_premium:
+
             for field in [
-                'views',
-                'daily_views',
-                'weekly_views',
-                'monthly_views',
-                'last_view_date',
-                'avg_city_price',
-                'avg_region_price',
-                'avg_country_price'
+                'views', 'daily_views', 'weekly_views', 'monthly_views',
+                'last_view_date', 'avg_city_price', 'avg_region_price', 'avg_country_price'
             ]:
                 data.pop(field, None)
         else:
-            avg_city_price = ListingSellersModel.objects.filter(
+
+            avg_city_price = AutoSalonListingModel.objects.filter(
                 city=instance.city, is_active=True
             ).aggregate(Avg('price'))['price__avg']
-            avg_region_price = ListingSellersModel.objects.filter(
+            avg_region_price = AutoSalonListingModel.objects.filter(
                 region=instance.region, is_active=True
             ).aggregate(Avg('price'))['price__avg']
-            avg_country_price = ListingSellersModel.objects.filter(
+            avg_country_price = AutoSalonListingModel.objects.filter(
                 country=instance.country, is_active=True
             ).aggregate(Avg('price'))['price__avg']
 
@@ -123,9 +117,9 @@ class ListingSerializer(serializers.ModelSerializer):
 
 
 
-
-
-class ListingPhotoSerializer(serializers.ModelSerializer):
+class AutoSalonListingPhotoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ListingSellersModel
+        model = AutoSalonListingModel
         fields = ('photo',)
+
+

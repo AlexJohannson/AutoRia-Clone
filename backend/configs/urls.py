@@ -31,6 +31,7 @@ urlpatterns = [
   path('api/auto_salon', include('apps.auto_salon.urls')),
   path('api/salon_role', include('apps.salon_role.urls')),
   path('api/invitation_to_auto_salon', include('apps.invitation_to_auto_salon.urls')),
+  path('api/auto_salon_listing', include('apps.auto_salon_listings.urls')),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

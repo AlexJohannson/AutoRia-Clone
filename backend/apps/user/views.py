@@ -6,6 +6,7 @@ from rest_framework.generics import GenericAPIView, ListCreateAPIView, RetrieveU
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from core.tasks.send_create_admin_task import send_create_admin_task
 from core.tasks.send_user_blocked_email_task import send_user_blocked_email_task
 from core.tasks.send_user_delete_email_task import send_user_delete_email_task
 from core.tasks.send_user_unblocked_email_task import send_user_unblocked_email_task
@@ -89,6 +90,10 @@ class UserToAdminView(GenericAPIView):
 
         user.is_staff = True
         user.save()
+
+        email = user.email
+        name = user.profile.name
+        send_create_admin_task.delay(email, name)
 
         serializer = self.get_serializer(user)
         return Response({'message': f'User {user.profile.name} has been promoted to admin.',

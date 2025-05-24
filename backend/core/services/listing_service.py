@@ -28,14 +28,15 @@ def check_seller_listing_limit(seller):
             return False, "Base account can only create one listing!"
     return True, None
 
+
 def update_listing_views(listing):
+    today = now()
 
-    today = now().date()
-
-    if hasattr(listing.seller, 'premium_account'):
+    if hasattr(listing, 'seller') and hasattr(listing.seller, 'premium_account') or hasattr(listing, 'auto_salon'):
         listing.views += 1
 
-        if listing.last_view_date == today:
+
+        if listing.last_view_date and listing.last_view_date.date() == today.date():
             listing.daily_views += 1
         else:
             listing.daily_views = 1
@@ -52,3 +53,5 @@ def update_listing_views(listing):
 
         listing.last_view_date = today
         listing.save(update_fields=['views', 'daily_views', 'weekly_views', 'monthly_views', 'last_view_date'])
+
+

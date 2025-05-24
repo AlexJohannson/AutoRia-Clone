@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <h4>Dear {{ name }}, you created car dealership <h3>{{ name_auto_salon }}</h3> with a location in {{ location }}
+        on our website. In your car dealership when you create it you act as the owner. You can add three roles to you
+    car dealership through an invitation to the car dealership. This is an admin - he will perform all the tasks
+    that you perform. This is seller - he will publish listings and monitor them. This is a mechanic - he can receive
+        request, like everyone else in your car dealership, from site visitors for car inspection or repair.
+    Important: you cannot add more roles than described above. If you want to change someones role, either you
+    or an admin need to delete someones role to put else in that role. Each role on uor website undergoes full
+        registration and only after that can he send an invitation for a role in your car dealership.
+    Important: you cannot add two identical roles, all roles in a car dealership are unique.
+    We thank you for your trust in us! If you have any questions. dont hesitate to contact out support team</h4>
+    <p>Team AutoRia-Clone</p>
+{% endblock %}

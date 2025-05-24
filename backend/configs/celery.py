@@ -20,7 +20,4 @@ app.conf.beat_schedule = {
         'task': 'core.tasks.exchange.update_exchange_rates',
         'schedule': crontab(minute=0, hour=4)
     },
-    'blocked_listing_email_task': {
-        'task': 'core.tasks.send_blocked_listing_email_task',
-    }
 }

@@ -4,9 +4,12 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.tasks.send_auto_salon_create_email_task import send_auto_salon_create_email_task
+
 from apps.auto_salon.models import AutoSalonModel
 from apps.auto_salon.permissions import IsAdminOrSuperUser, IsSalonOwnerAdminOrSuperuser
 from apps.auto_salon.serializers import AutoSalonSerializer
+from apps.premium_account.models import PremiumAccountModel
 from apps.salon_role.models import SalonRoleModels
 
 
@@ -30,6 +33,14 @@ class AutoSalonCreateApiView(ListCreateAPIView):
             user = self.request.user,
             auto_salon = auto_salon,
             role = 'superuser',
+        )
+        PremiumAccountModel.objects.create(auto_salon=auto_salon)
+        send_auto_salon_create_email_task.delay(
+            auto_salon.user.email,
+            auto_salon.user.profile.name,
+            auto_salon.name,
+            auto_salon.location
+
         )
 
 
