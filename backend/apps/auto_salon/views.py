@@ -4,8 +4,10 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from core.tasks import send_delete_auto_salon_task
 from core.tasks.send_auto_salon_create_email_task import send_auto_salon_create_email_task
 
+from apps import auto_salon
 from apps.auto_salon.models import AutoSalonModel
 from apps.auto_salon.permissions import IsAdminOrSuperUser, IsSalonOwnerAdminOrSuperuser
 from apps.auto_salon.serializers import AutoSalonSerializer
@@ -51,7 +53,13 @@ class AutoSalonRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
     http_method_names = ['get', 'put', 'delete']
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
+        auto_salon = self.get_object()
+        send_delete_auto_salon_task.delay(
+            auto_salon.user.email,
+            auto_salon.user.profile.name,
+            auto_salon.name,
+            auto_salon.location
+        )
+        self.perform_destroy(auto_salon)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

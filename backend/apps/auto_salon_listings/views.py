@@ -1,5 +1,6 @@
 from django.core.cache import cache
 
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny
@@ -8,7 +9,13 @@ from rest_framework.response import Response
 from core.services.exchange_servise import get_exchange_rates
 from core.services.listing_service import calculate_prices, update_listing_views
 from core.services.listing_validation_service import contains_forbidden_word
-from core.tasks import avg_price_task, update_exchange_rates
+from core.tasks import (
+    avg_price_task,
+    send_auto_salon_listing_publication_email_task,
+    send_blocked_auto_salon_listing_email_task,
+    send_deleted_auto_salon_listing_email_task,
+    update_exchange_rates,
+)
 
 from apps.auto_salon.models import AutoSalonModel
 from apps.auto_salon_listings.models import AutoSalonListingModel
@@ -59,7 +66,7 @@ class AutoSalonListingCreateApiView(ListCreateAPIView):
             cache.set(auto_salon_key, attempts, timeout=3600)
 
             if attempts >= 3:
-                serializer.save(
+                listing = serializer.save(
                     auto_salon=auto_salon,
                     currency=currency,
                     price=price,
@@ -70,13 +77,16 @@ class AutoSalonListingCreateApiView(ListCreateAPIView):
                     is_active=False,
                     bad_word_attempts=3,
                 )
+
+                send_blocked_auto_salon_listing_email_task.delay(listing.id)
+
                 cache.delete(auto_salon_key)
                 raise ValidationError('Listing is now inactive due to forbidden words. Manager notified.')
             else:
                 attempts_left = 3 - attempts
                 raise ValidationError(f'Listing contains forbidden words. You have {attempts_left} attempts left.')
 
-        serializer.save(
+        listing = serializer.save(
             auto_salon=auto_salon,
             currency=currency,
             price=price,
@@ -90,6 +100,13 @@ class AutoSalonListingCreateApiView(ListCreateAPIView):
 
         update_exchange_rates.apply_async()
         avg_price_task.apply_async()
+        send_auto_salon_listing_publication_email_task.delay(
+            auto_salon.user.email,
+            auto_salon.user.profile.name,
+            listing.brand.brand,
+            listing.car_model.car_model,
+            price=str(listing.price),
+        )
 
 
 class AutoSalonListingRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
@@ -109,6 +126,18 @@ class AutoSalonListingRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
 
         serializer = self.get_serializer(instance, context={'request': request})
         return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):
+        listing = self.get_object()
+        send_deleted_auto_salon_listing_email_task.delay(
+            listing.auto_salon.user.email,
+            listing.auto_salon.user.profile.name,
+            listing.brand.brand,
+            listing.car_model.car_model,
+            price=str(listing.price),
+        )
+        self.perform_destroy(listing)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AddPhotoToListingView(UpdateAPIView):

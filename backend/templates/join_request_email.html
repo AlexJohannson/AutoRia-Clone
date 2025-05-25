@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+	<p>Dear {{ name }},</p>
+    <p>You sent an invitation to a car dealership {{ auto_salon_name }} located in {{ location }} for the role
+        of {{ role }} made {{ created_at }}</p>
+    <p>Please wait for confirmation from the car dealership</p>
+    <p>Team AutoRia-Clone</p>
+{% endblock %}
