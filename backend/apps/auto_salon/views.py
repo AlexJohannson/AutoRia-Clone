@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from core.tasks import send_delete_auto_salon_task
 from core.tasks.send_auto_salon_create_email_task import send_auto_salon_create_email_task
 
-from apps import auto_salon
+from apps.auto_salon.filter import AutoSalonFilter
 from apps.auto_salon.models import AutoSalonModel
 from apps.auto_salon.permissions import IsAdminOrSuperUser, IsSalonOwnerAdminOrSuperuser
 from apps.auto_salon.serializers import AutoSalonSerializer
@@ -18,6 +18,7 @@ from apps.salon_role.models import SalonRoleModels
 class AutoSalonCreateApiView(ListCreateAPIView):
     queryset = AutoSalonModel.objects.all()
     serializer_class = AutoSalonSerializer
+    filterset_class = AutoSalonFilter
 
 
     def get_permissions(self):

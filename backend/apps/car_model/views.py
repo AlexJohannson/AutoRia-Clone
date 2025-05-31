@@ -1,6 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
 
+from .filter import CarModelFilter
 from .models import CarModelModel
 from .permissions import IsAdminOrSuperUser
 from .serializer import CarModelSerializer
@@ -9,6 +10,7 @@ from .serializer import CarModelSerializer
 class CarModelListCreateView(ListCreateAPIView):
     queryset = CarModelModel.objects.all()
     serializer_class = CarModelSerializer
+    filterset_class = CarModelFilter
 
 
     def get_permissions(self):

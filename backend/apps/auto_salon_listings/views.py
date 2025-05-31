@@ -18,6 +18,7 @@ from core.tasks import (
 )
 
 from apps.auto_salon.models import AutoSalonModel
+from apps.auto_salon_listings.filter import ListingAutoSalonFilter
 from apps.auto_salon_listings.models import AutoSalonListingModel
 from apps.auto_salon_listings.permissions import IsAdminOrSuperuser, IsSalonStaffOrAdmin
 from apps.auto_salon_listings.serializers import AutoSalonListingPhotoSerializer, AutoSalonListingSerializer
@@ -26,6 +27,7 @@ from apps.salon_role.models import SalonRoleModels
 
 class AutoSalonListingCreateApiView(ListCreateAPIView):
     serializer_class = AutoSalonListingSerializer
+    filterset_class = ListingAutoSalonFilter
 
     def get_queryset(self):
         return AutoSalonListingModel.objects.filter(is_active=True)

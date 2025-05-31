@@ -13,6 +13,7 @@ from core.tasks.send_user_unblocked_email_task import send_user_unblocked_email_
 
 from ..listings.models import ListingSellersModel
 from ..sellers.models import SellersModel
+from .filter import UserFilter
 from .permissions import IsAdminOrSuperuser, IsOwnerOrAdmin, IsSuperUserOnly
 from .serializers import UserSerializer
 
@@ -22,6 +23,7 @@ UserModel = get_user_model()
 class UserListCreateView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
+    filterset_class = UserFilter
 
     def get_permissions(self):
         if self.request.method == 'POST':

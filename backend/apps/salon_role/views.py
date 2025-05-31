@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from core.tasks import send_role_deleted_email_task
 
+from apps.salon_role.filetr import SalonRoleFilter
 from apps.salon_role.models import SalonRoleModels
 from apps.salon_role.permissions import CanManageSalonRole, IsSalonMemberOrAdmin
 from apps.salon_role.serializers import SalonRoleSerializer
@@ -13,6 +14,7 @@ class SalonRoleListApiView(ListAPIView):
     queryset = SalonRoleModels.objects.all()
     serializer_class = SalonRoleSerializer
     permission_classes = (IsSalonMemberOrAdmin,)
+    filterset_class = SalonRoleFilter
 
 
 

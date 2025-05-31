@@ -10,6 +10,7 @@ from core.tasks.send_seller_deleted_email_task import send_seller_deleted_email_
 
 from ..base_account.models import BaseAccountModel
 from ..premium_account.models import PremiumAccountModel
+from .filter import SellerFilter
 from .models import SellersModel
 from .permissions import IsAdminOrSuperuser, IsSellerOrAdmin
 from .serializers import SellerSerializer
@@ -18,6 +19,7 @@ from .serializers import SellerSerializer
 class SellersListCreateView(ListCreateAPIView):
     queryset = SellersModel.objects.filter(is_active=True)
     serializer_class = SellerSerializer
+    filterset_class = SellerFilter
 
     def get_permissions(self):
         if self.request.method == 'POST':

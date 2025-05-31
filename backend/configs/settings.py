@@ -36,6 +36,7 @@ AUTH_USER_MODEL = 'user.UserModel'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_celery_beat',
     'django_celery_results',
+    'django_filters',
 
     #my_apps
     'core',
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
     'apps.salon_role',
     'apps.invitation_to_auto_salon',
     'apps.auto_salon_listings',
+    'apps.chat',
 ]
 
 MIDDLEWARE = [
@@ -84,6 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'configs.wsgi.application'
+ASGI_APPLICATION = 'configs.asgi.application'
 
 
 # Database

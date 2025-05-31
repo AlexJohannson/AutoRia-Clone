@@ -9,6 +9,7 @@ from core.tasks.send_welcome_email_task import send_welcome_email_task
 from .models import ProfileModel
 
 UserModel = get_user_model()
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileModel

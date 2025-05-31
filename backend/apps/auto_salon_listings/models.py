@@ -1,7 +1,9 @@
 import os
 
+from django.core import validators as V
 from django.db import models
 
+from core.enums.regex_enum import RegexEnum
 from core.models import BaseModel
 from core.services.file_service import upload_listing_photo
 
@@ -19,9 +21,9 @@ class AutoSalonListingModel(BaseModel):
     brand = models.ForeignKey(CarBrandModel, on_delete=models.CASCADE, related_name='auto_salon_listings')
     car_model = models.ForeignKey(CarModelModel, on_delete=models.CASCADE, related_name='auto_salon_listings')
     year = models.IntegerField()
-    country = models.CharField(max_length=100)
-    region = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
+    country = models.CharField(max_length=30, validators=[V.RegexValidator(RegexEnum.COUNTRY_LISTING.pattern, RegexEnum.COUNTRY_LISTING.msg)])
+    region = models.CharField(max_length=30, validators=[V.RegexValidator(RegexEnum.REGION_LISTING.pattern, RegexEnum.REGION_LISTING.msg)])
+    city = models.CharField(max_length=30, validators=[V.RegexValidator(RegexEnum.CITY_LISTING.pattern, RegexEnum.CITY_LISTING.msg)])
     price = models.FloatField(null=True)
     currency = models.CharField(max_length=3, choices=[('USD', 'USD'), ('EUR', 'UER'), ('UAH', 'UAH')], default='USD')
     price_usd = models.FloatField(null=True, blank=True)

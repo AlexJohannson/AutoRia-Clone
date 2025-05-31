@@ -19,6 +19,7 @@ from core.tasks import (
 
 from apps.sellers.models import SellersModel
 
+from .filter import ListingFilter
 from .models import ListingSellersModel
 from .permissions import IsAdminOrSuperUser, IsOwnerOrAdmin
 from .serializer import ListingPhotoSerializer, ListingSerializer
@@ -26,6 +27,8 @@ from .serializer import ListingPhotoSerializer, ListingSerializer
 
 class ListingListCreateView(ListCreateAPIView):
     serializer_class = ListingSerializer
+    filterset_class = ListingFilter
+
 
     def get_queryset(self):
         return ListingSellersModel.objects.filter(is_active=True)

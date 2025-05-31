@@ -115,6 +115,11 @@ class AutoSalonListingSerializer(serializers.ModelSerializer):
             validated_data['car_model'] = validated_data.pop('car_model_id')
         return super().update(instance, validated_data)
 
+    def validate_price(self, price):
+        if price <= 0:
+            raise serializers.ValidationError('Price must be greater than 0')
+        return price
+
 
 
 class AutoSalonListingPhotoSerializer(serializers.ModelSerializer):
