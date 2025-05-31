@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-to-the-chat {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: lightskyblue;
+    border-radius: 15px;
+}
+.form-login {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+}
+.input-login {
+    width: 250px;
+    height: 25px;
+    background-color: lavender;
+    border: 1px solid black;
+}
+.input-login::placeholder{
+    text-align: center;
+}
+.button-login {
+    width: 70px;
+    height: 40px;
+    border-radius: 15px;
+    border: none;
+    color: wheat;
+    background-color: lightslategrey;
+}
+.button-login:hover {
+    color: green;
+    background-color: white;
+}
