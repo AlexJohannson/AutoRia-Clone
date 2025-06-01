@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {socketService} from '../../../services/socketService';
 
 const ChatComponents = () => {
-
     const [room, setRoom] = useState(null);
     const [socketClient, setSocketClient] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -15,7 +14,6 @@ const ChatComponents = () => {
     }, [room]);
 
     const socketInit = async (room) => {
-
         const {chat} = await socketService();
         const client = await chat(room);
 
@@ -25,8 +23,7 @@ const ChatComponents = () => {
 
         client.onmessage = ({data}) => {
             const parsedData = JSON.parse(data.toString());
-
-            const role = getUserRole(parsedData);
+            const role = parsedData.user_role || 'user';
 
             setMessages(prevState => [...prevState, {
                 user: parsedData.user,
@@ -36,15 +33,6 @@ const ChatComponents = () => {
         };
 
         return client;
-    };
-
-
-    const getUserRole = ({is_staff, is_seller, is_auto_salon_member}) => {
-
-        if (is_staff) return 'admin';
-        if (is_seller) return 'seller';
-        if (is_auto_salon_member) return 'salon_member';
-        return 'user';
     };
 
     const roomHandler = () => {
@@ -84,5 +72,4 @@ const ChatComponents = () => {
 };
 
 export {ChatComponents};
-
 
