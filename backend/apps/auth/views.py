@@ -15,7 +15,15 @@ from apps.user.serializers import UserSerializer
 
 UserModel = get_user_model()
 class ActivateUserView(GenericAPIView):
+    """
+        patch:
+            activate user view with activation token
+    """
+
     permission_classes = (AllowAny,)
+
+    def get_serializer(self):
+        return None
 
     def patch(self, *args, **kwargs):
         token = kwargs['token']
@@ -27,7 +35,15 @@ class ActivateUserView(GenericAPIView):
 
 
 class RecoveryRequestView(GenericAPIView):
+    """
+        post:
+            recovery request
+    """
+
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer(self):
+        return None
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -39,7 +55,15 @@ class RecoveryRequestView(GenericAPIView):
 
 
 class RecoveryPasswordView(GenericAPIView):
+    """
+        post:
+            recovery password and get token
+    """
+
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer(self):
+        return None
 
     def post(self, *args, **kwargs):
         data = self.request.data
@@ -55,7 +79,15 @@ class RecoveryPasswordView(GenericAPIView):
 
 
 class SocketTokenView(GenericAPIView):
+    """
+       get:
+            get socket token
+    """
+
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer(self):
+        return None
 
     def get(self, *args, **kwargs):
         token = JWTService.create_token(user=self.request.user, token_class=SocketToken)
@@ -63,7 +95,15 @@ class SocketTokenView(GenericAPIView):
 
 
 class UserRoleView(GenericAPIView):
+    """
+        get:
+            get site user role
+    """
+
     permission_classes = [IsAuthenticated]
+
+    def get_serializer(self):
+        return None
 
     def get(self, request):
         user = request.user

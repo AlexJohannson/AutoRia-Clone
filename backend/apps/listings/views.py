@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -16,6 +17,7 @@ from core.tasks import (
     send_listing_publication_email_task,
     update_exchange_rates,
 )
+from drf_yasg.utils import swagger_auto_schema
 
 from apps.sellers.models import SellersModel
 
@@ -25,7 +27,20 @@ from .permissions import IsAdminOrSuperUser, IsOwnerOrAdmin
 from .serializer import ListingPhotoSerializer, ListingSerializer
 
 
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        security=[]
+    )
+)
 class ListingListCreateView(ListCreateAPIView):
+    """
+        get:
+            get all seller listings list
+        post:
+            create new listing
+    """
+
     serializer_class = ListingSerializer
     filterset_class = ListingFilter
 
@@ -112,8 +127,22 @@ class ListingListCreateView(ListCreateAPIView):
         )
 
 
-
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        security=[]
+    )
+)
 class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """
+        get:
+            get detail listing by id
+        put:
+            full update detail listing by id
+        delete:
+            delete listing by id
+    """
+
     serializer_class = ListingSerializer
     http_method_names = ['get', 'put', 'delete']
 
@@ -144,6 +173,11 @@ class ListingRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 
 class AddPhotoToListingView(UpdateAPIView):
+    """
+        put:
+            add photo to listing by id
+    """
+
     serializer_class = ListingPhotoSerializer
     queryset = ListingSellersModel.objects.all()
     permission_classes = [IsOwnerOrAdmin, IsAuthenticated]
@@ -157,6 +191,11 @@ class AddPhotoToListingView(UpdateAPIView):
 
 
 class ListInactiveListingView(ListAPIView):
+    """
+        get:
+            get all inactive listing list
+    """
+
     serializer_class = ListingSerializer
     permission_classes = [IsAdminOrSuperUser]
     queryset = ListingSellersModel.objects.filter(is_active=False)
@@ -164,8 +203,14 @@ class ListInactiveListingView(ListAPIView):
 
 
 class DeleteInactiveListingsView(RetrieveUpdateDestroyAPIView):
+    """
+        delete:
+            delete inactive listing by id
+    """
+
     serializer_class = ListingSerializer
     queryset = ListingSellersModel.objects.filter(is_active=False)
     permission_classes = [IsAdminOrSuperUser]
     http_method_names = ['delete']
+
 

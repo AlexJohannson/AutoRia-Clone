@@ -18,7 +18,22 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.urls import include, path
 
+from rest_framework.permissions import AllowAny
+
 from configs import settings
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+schema_view = get_schema_view(
+  openapi.Info(
+    title="AutoRia-Clone",
+    default_version='v1',
+    description="AutoRia-Clone",
+    contact=openapi.Contact(email="autoriatest@clone.send"),
+  ),
+  public=True,
+  permission_classes=[AllowAny],
+)
 
 urlpatterns = [
   path('api/auth', include('apps.auth.urls')),
@@ -32,6 +47,8 @@ urlpatterns = [
   path('api/salon_role', include('apps.salon_role.urls')),
   path('api/invitation_to_auto_salon', include('apps.invitation_to_auto_salon.urls')),
   path('api/auto_salon_listing', include('apps.auto_salon_listings.urls')),
+  path('api/chat', include('apps.chat.urls')),
+  path('api/doc', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
 ]
 
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -17,6 +17,13 @@ from .serializers import SellerSerializer
 
 
 class SellersListCreateView(ListCreateAPIView):
+    """
+        get:
+            get all sellers list
+        post:
+            create new seller
+    """
+
     queryset = SellersModel.objects.filter(is_active=True)
     serializer_class = SellerSerializer
     filterset_class = SellerFilter
@@ -42,6 +49,13 @@ class SellersListCreateView(ListCreateAPIView):
 
 
 class SellersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    """
+        get:
+            get seller details by id
+        delete:
+            delete seller by id
+    """
+
     queryset = SellersModel.objects.all()
     serializer_class = SellerSerializer
     permission_classes = [IsSellerOrAdmin]
@@ -60,7 +74,15 @@ class SellersRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 
 class PremiumAccountPurchaseApiView(GenericAPIView):
+    """
+        post:
+            buy premium account for sellers
+    """
+
     permission_classes = [IsAuthenticated]
+
+    def get_serializer(self):
+        return None
 
     def post(self, request, *args, **kwargs):
         seller = SellersModel.objects.filter(user=request.user).first()

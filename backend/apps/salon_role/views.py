@@ -11,6 +11,11 @@ from apps.salon_role.serializers import SalonRoleSerializer
 
 
 class SalonRoleListApiView(ListAPIView):
+    """
+        get:
+            get auto salon role list
+    """
+
     queryset = SalonRoleModels.objects.all()
     serializer_class = SalonRoleSerializer
     permission_classes = (IsSalonMemberOrAdmin,)
@@ -19,10 +24,17 @@ class SalonRoleListApiView(ListAPIView):
 
 
 class SalonRoleRetrieveDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+        get:
+            get auto salon role by id
+        delete:
+            delete auto salon role by id
+    """
+
     queryset = SalonRoleModels.objects.all()
     serializer_class = SalonRoleSerializer
     permission_classes = (IsSalonMemberOrAdmin, CanManageSalonRole)
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ['get', 'delete']
 
 
     def delete(self, request, *args, **kwargs):

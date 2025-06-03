@@ -1,0 +1,59 @@
+.chat-container {
+  width: 400px;
+}
+.room-input {
+  width: 400px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.chat-room-input {
+  width: 350px;
+  height: 36px;
+  background-color: lightskyblue;
+  border-radius: 10px;
+  border: none;
+}
+.chat-room-input::placeholder {
+  text-align: center;
+}
+.go-to-room {
+   width: 100px;
+    height: 40px;
+    border-radius: 15px;
+    border: none;
+    color: wheat;
+    background-color: lightslategrey;
+}
+.go-to-room:hover {
+    color: green;
+    background-color: lightcoral;
+}
+.messages {
+    width: 400px;
+}
+.message {
+    width: 400px;
+    border-bottom: 1px solid gray;
+}
+.message span {
+    cursor: pointer;
+}
+.message-input-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+.message-input-container input {
+    width: 250px;
+    height: 25px;
+    background-color: lavender;
+    border: 1px solid black;
+}
+.message-input-container input::placeholder {
+    text-align: center;
+}

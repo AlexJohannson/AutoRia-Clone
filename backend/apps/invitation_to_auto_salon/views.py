@@ -16,6 +16,13 @@ from apps.salon_role.models import SalonRoleModels
 
 
 class JoinRequestListCreateView(ListCreateAPIView):
+    """
+        get:
+            get invitation list
+        post:
+            create new invitation to auto salon
+    """
+
     serializer_class = JoinRequestSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -48,9 +55,15 @@ class JoinRequestListCreateView(ListCreateAPIView):
 
 
 class JoinRequestApproveApiView(UpdateAPIView):
+    """
+        patch:
+            approve invitation to auto salon
+    """
+
     queryset = JoinRequestModel.objects.all()
     serializer_class = JoinRequestSerializer
     permission_classes = [IsAuthenticated, IsSalonAdminOrSuperUser]
+    http_method_names = ['patch']
 
     def update(self, request, *args, **kwargs):
         join_request = self.get_object()
@@ -88,6 +101,11 @@ class JoinRequestApproveApiView(UpdateAPIView):
 
 
 class JoinRequestDeleteAPIView(DestroyAPIView):
+    """
+        delete:
+            delete invitation to auto salon by id
+    """
+
     queryset = JoinRequestModel.objects.all()
     permission_classes = (IsSalonAdminOrSuperUser,)
 

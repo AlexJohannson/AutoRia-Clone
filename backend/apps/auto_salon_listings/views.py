@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -16,6 +17,7 @@ from core.tasks import (
     send_deleted_auto_salon_listing_email_task,
     update_exchange_rates,
 )
+from drf_yasg.utils import swagger_auto_schema
 
 from apps.auto_salon.models import AutoSalonModel
 from apps.auto_salon_listings.filter import ListingAutoSalonFilter
@@ -25,7 +27,20 @@ from apps.auto_salon_listings.serializers import AutoSalonListingPhotoSerializer
 from apps.salon_role.models import SalonRoleModels
 
 
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        security=[]
+    )
+)
 class AutoSalonListingCreateApiView(ListCreateAPIView):
+    """
+        get:
+            get all auto salon listings
+        post:
+            create new auto salon listing
+    """
+
     serializer_class = AutoSalonListingSerializer
     filterset_class = ListingAutoSalonFilter
 
@@ -110,8 +125,22 @@ class AutoSalonListingCreateApiView(ListCreateAPIView):
             price=str(listing.price),
         )
 
-
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        security=[]
+    )
+)
 class AutoSalonListingRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
+    """
+        get:
+            get auto salon listing by Id
+        put:
+            full upgrade auto salon listing by Id
+        delete:
+            delete auto salon listing by Id
+    """
+
     serializer_class = AutoSalonListingSerializer
     http_method_names = ['get', 'put', 'delete']
     
@@ -143,6 +172,11 @@ class AutoSalonListingRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView)
 
 
 class AddPhotoToListingView(UpdateAPIView):
+    """
+        put:
+            put photo to auto salon listing
+    """
+
     serializer_class = AutoSalonListingPhotoSerializer
     queryset = AutoSalonListingModel.objects.all()
     permission_classes = [IsSalonStaffOrAdmin]
@@ -155,12 +189,22 @@ class AddPhotoToListingView(UpdateAPIView):
         super().perform_update(serializer)
 
 class AutoSalonListingInactiveList(ListAPIView):
+    """
+        get:
+            get inactive auto salon listing list
+    """
+
     serializer_class = AutoSalonListingSerializer
     permission_classes = (IsAdminOrSuperuser, )
     queryset = AutoSalonListingModel.objects.filter(is_active=False)
     http_method_names = ['get']
 
 class DeleteInactiveAutoSalonListing(RetrieveUpdateDestroyAPIView):
+    """
+        delete:
+            delete inactive auto salon listing by Id
+    """
+
     serializer_class = AutoSalonListingSerializer
     queryset = AutoSalonListingModel.objects.filter(is_active=False)
     permission_classes = (IsAdminOrSuperuser, )

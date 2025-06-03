@@ -8,6 +8,8 @@ class ChatRoomModel(models.Model):
         db_table = 'chat_room'
 
     name = models.CharField(max_length=30)
+    is_private = models.BooleanField(default=False)
+    users = models.ManyToManyField(UserModel, related_name='chat_rooms')
 
     def __str__(self):
         return self.name

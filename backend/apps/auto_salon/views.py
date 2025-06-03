@@ -16,6 +16,13 @@ from apps.salon_role.models import SalonRoleModels
 
 
 class AutoSalonCreateApiView(ListCreateAPIView):
+    """
+        get:
+            get auto salon list
+        post:
+            create new auto salon
+    """
+
     queryset = AutoSalonModel.objects.all()
     serializer_class = AutoSalonSerializer
     filterset_class = AutoSalonFilter
@@ -48,6 +55,15 @@ class AutoSalonCreateApiView(ListCreateAPIView):
 
 
 class AutoSalonRetrieveUpdateDestroyApiView(RetrieveUpdateDestroyAPIView):
+    """
+        get:
+            get auto salon by Id
+        put:
+           full upgrade auto salon by Id
+        delete:
+            delete auto salon by Id
+    """
+
     queryset = AutoSalonModel.objects.all()
     serializer_class = AutoSalonSerializer
     permission_classes = (IsSalonOwnerAdminOrSuperuser, )

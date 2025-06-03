@@ -1,13 +1,17 @@
 import React from 'react';
-import {ChatComponents} from "../../components/ChatComponet/ChatComponents/ChatComponents";
+import {ChatComponents} from "../../components/ChatComponets/ChatComponents";
+import "./AdminPage.css";
+
 
 
 
 const AdminPage = () => {
     return (
-        <div>
-            AdminPage
-            <ChatComponents/>
+        <div className={'admin-page'}>
+            <h1>Admin Page</h1>
+            <div>
+                <ChatComponents/>
+            </div>
         </div>
     );
 };
