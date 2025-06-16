@@ -2,11 +2,11 @@ from django_filters import rest_framework as filters
 
 
 class UserFilter(filters.FilterSet):
-    lt_year = filters.NumberFilter(field_name='profile__year', lookup_expr='lt')
-    gt_year = filters.NumberFilter(field_name='profile__year', lookup_expr='gt')
     lt_house = filters.NumberFilter(field_name='profile__house', lookup_expr='lt')
     gt_house = filters.NumberFilter(field_name='profile__house', lookup_expr='gt')
-    range_age = filters.RangeFilter(field_name='profile__age')
+    lt_age = filters.NumberFilter(field_name='profile__age', lookup_expr='lt')
+    gt_age = filters.NumberFilter(field_name='profile__age', lookup_expr='gt')
+
 
 
     icontains_name = filters.CharFilter(field_name='profile__name', lookup_expr='icontains')

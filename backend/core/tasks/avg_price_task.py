@@ -5,7 +5,7 @@ from configs.celery import app
 from apps.listings.models import ListingSellersModel
 
 
-@app.task
+@app.task(name='core.tasks.avg_price_task')
 def avg_price_task():
     listings = ListingSellersModel.objects.filter(is_active=True, seller__premium_account__isnull=False)
 

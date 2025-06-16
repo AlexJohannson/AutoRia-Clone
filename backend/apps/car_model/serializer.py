@@ -17,3 +17,10 @@ class CarModelSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['car_brand'] = validated_data.pop('car_brand_id')
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if 'car_brand_id' in validated_data:
+            instance.car_brand = validated_data.pop('car_brand_id')
+        instance.car_model = validated_data.get('car_model', instance.car_model)
+        instance.save()
+        return instance

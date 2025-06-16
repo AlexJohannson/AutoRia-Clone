@@ -7,6 +7,11 @@ class PagePagination(PageNumberPagination):
     max_page_size = 10
     page_size_query_param = 'size'
 
+    def paginate_queryset(self, queryset, request, view=None):
+        if not queryset.ordered:
+            queryset = queryset.order_by('id')
+        return super().paginate_queryset(queryset, request, view)
+
     def get_paginated_response(self, data):
         return Response({
             'total_items': self.page.paginator.count,

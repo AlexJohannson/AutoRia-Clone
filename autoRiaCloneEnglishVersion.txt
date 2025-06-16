@@ -1,0 +1,71 @@
+AutoRia Clone
+
+Scenario:
+
+A client has approached us with a request for a car sales website. They already have a fairly large customer base and an existing website that was developed around 2010. Currently, the customer base is growing rapidly, and they want to build a platform that can handle many times more traffic than the current one.
+Another key aspect of the platform is the need for frequent modifications, including adding, rewriting, and disabling certain system elements. The system must be highly flexible and adaptable to changes, so this should be considered during the development process.
+Additionally, the customer has heard that AWS is trendy, modern, and excellent, so they would like the new platform to be hosted on AWS. For this, it must be containerized in the end.
+
+
+Key Requirements:
+
+  User Roles:
+
+  The old platform has four roles:
+
+- Buyer(User) – A person browsing the platform. They can contact individual sellers or dealerships to arrange car viewings, test drives, etc.
+- Seller (User) – A person looking to sell a car.
+- Manager(Admin) – A person who oversees the platform, bans users, removes invalid listings, reviews suspicious posts, etc. Only an administrator can create this type of user.
+- Administrator(Superuser) – A super-user with full control. This role will be reserved for the client and their partners.
+
+- !!! The client mentioned dealerships. In the future, the platform is expected to accommodate not just individual sellers but also dealerships with their own managers, administrators, salespeople, and mechanics. This must be taken into account when designing the architecture.
+!!! A technical expert suggested implementing this through a permission-based system.
+While this feature may not be implemented immediately, it should be considered from the beginning to ensure the architecture is future-proof.
+
+  Account Types:
+
+  The platform will support two types of accounts:
+
+- Basic and Premium.
+- The Basic account will be available by default to all sellers.
+- The Premium account must be purchased for a fee.
+- A Premium account will allow users to access listing statistics, view average market prices for a given car model, and track listing views.
+
+
+  Core Features of the Platform:
+
+- Creating Car Listings
+- A registered seller can list their car for sale. If the seller has a Basic account, they can list only one vehicle at a time. Premium users can list an unlimited number of vehicles.
+- The selection of car brands should be presented as a dropdown list. If a brand is missing, the seller should be able to notify the administration.
+- The same process applies to car models.
+
+- Example:
+
+- Brand: BMW
+- Model: X5
+- Brand: Daewoo
+- Model: Lanos
+
+- Pricing should be available in USD, EUR, and UAH. The price must be entered in only one currency, with the others calculated based on the exchange rate from PrivatBank, updated daily. The source of the exchange rate and the originally entered price must be clearly specified.
+- Listings will be automatically checked for inappropriate language. If no offensive words are detected, the listing becomes active and appears on the platform. If inappropriate language is found, the system will prompt the seller to edit the listing.
+- A seller can edit a listing only three times. If a listing fails the check three times, it becomes inactive, and a notification will be sent to a manager for manual review.
+
+
+  Listing Information:
+
+- Sellers with a Basic account will not receive detailed information about their listings.
+- Sellers with a Premium account will have access to the following data:
+- Total views of their listing.
+- Views per day, week, and month.
+- The average price of similar cars in the region where the car is being sold.
+- The average price of the car across all of Ukraine.
+
+
+  Additional Requirements:
+
+- A README file must be included, detailing setup instructions and platform usage.
+- A Postman collection must be provided for API requests.
+- All features should be mocked to facilitate testing.
+
+
+

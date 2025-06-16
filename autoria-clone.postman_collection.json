@@ -1,0 +1,2442 @@
+{
+	"info": {
+		"_postman_id": "02fe1212-5ac4-483c-8868-73949c1921eb",
+		"name": "autoria-clone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40047100"
+	},
+	"item": [
+		{
+			"name": "authRegistration",
+			"item": [
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "authLoginRecoveryActivate",
+							"item": [
+								{
+									"name": "login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"res = pm.response.json();\r",
+													"pm.environment.set(\"access\", res.access);\r",
+													"pm.environment.set(\"refresh\", res.refresh);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "create superuser",
+													"value": "",
+													"type": ""
+												}
+											]
+										},
+										"url": {
+											"raw": "{{host}}/auth",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "refresh",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"res = pm.response.json();\r",
+													"pm.environment.set(\"refresh\", res.refresh);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{refresh}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": [
+												{
+													"key": "refresh",
+													"value": "{{refresh}}",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{host}}/auth/refresh",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"refresh"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "activateUserToken",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/auth/activate/{{past activate token here received from frontend}}",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"activate",
+												"{{past activate token here received from frontend}}"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "recoveryRequst",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": []
+										},
+										"url": {
+											"raw": "{{host}}/auth/recovery{{past recovery token here received from frontend}}",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"recovery"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "recoveryPassword",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "urlencoded",
+											"urlencoded": []
+										},
+										"url": {
+											"raw": "{{host}}/auth/recovery/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"recovery",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "socketToken",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"res = pm.response.json()\r",
+													"pm.environment.set(\"websocket_token\", res.token)"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/auth/socket",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"socket"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "autoRiaSiteRole",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/auth/site_role",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auth",
+												"site_role"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "usersRegistrations",
+					"item": [
+						{
+							"name": "userRegistration",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"res = pm.response.json();\r",
+											"pm.environment.set(\"access\", res.access);\r",
+											"pm.environment.set(\"refresh\", res.refresh);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/user/registration",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"user",
+										"registration"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "userToAdminBlockUnblock",
+					"item": [
+						{
+							"name": "blockUnblockUserAdminOrSuperUser",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"action\": \"unblock\",\r\n    \"action\": \"block\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/user/block_unblock/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"user",
+										"block_unblock",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "userToAdmin",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/user/make_admin/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"user",
+										"make_admin",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "usersList",
+			"item": [
+				{
+					"name": "getAllUsersAccessAdminOrSuperUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/user/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fullUpdateUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/user/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sellersListings",
+			"item": [
+				{
+					"name": "selllersList",
+					"item": [
+						{
+							"name": "getAllSellersAdminOrSuperuser",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/sellers",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sellers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createSeller",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sellers",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sellers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getSellersById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/sellers/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sellers",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteSellerById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/sellers/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sellers",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "listingsList",
+					"item": [
+						{
+							"name": "createListingAddPhoto",
+							"item": [
+								{
+									"name": "createListing",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/listings",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"listings"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addPhotoToListing",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": []
+										},
+										"url": {
+											"raw": "{{host}}/listings/photo/:id",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"listings",
+												"photo",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": ""
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "getAllListings",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/listings",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getListingById",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/listings/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fullUpdateListing",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/listings/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteListingById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/listings/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "premiumAccount",
+					"item": [
+						{
+							"name": "buyPremiumAccount",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/sellers/buy_premium",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"sellers",
+										"buy_premium"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "inactiveListings",
+					"item": [
+						{
+							"name": "getListInactiveListings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/listings/inactive",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings",
+										"inactive"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteInactiveListings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/listings/inactive/delete/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"listings",
+										"inactive",
+										"delete",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "carsModels",
+			"item": [
+				{
+					"name": "carBrand",
+					"item": [
+						{
+							"name": "createCarBrand",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/car_brand",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_brand"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "allCarBrandList",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{host}}/car_brand",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_brand"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCarBrandById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/car_brand/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_brand",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fullUpdateCarBrand",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/car_brand/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_brand",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteCarBrandById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{host}}/car_brand/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_brand",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "carModel",
+					"item": [
+						{
+							"name": "creatCarModel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/car_model",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_model"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllCarModel",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/car_model",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_model"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCarModelById",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/car_model/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_model",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fullUpdateCarModel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/car_model/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_model",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteCarModel",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{host}}/car_model/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"car_model",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "badWords",
+			"item": [
+				{
+					"name": "createBadWords",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/forbidden_word",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forbidden_word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getListOfBadWords",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/forbidden_word",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forbidden_word"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBadWordsById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/forbidden_word/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forbidden_word",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fullUpdateBadWord",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/forbidden_word/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forbidden_word",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteBadWords",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/forbidden_word/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"forbidden_word",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "autoSalonAndRoleSalon",
+			"item": [
+				{
+					"name": "autoSalon",
+					"item": [
+						{
+							"name": "createAutoSalon",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/auto_salon",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "allAutoSalonList",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAutoSalonById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fullUpdateAutoSalon",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/auto_salon/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteAutoSalon",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "salonRole",
+					"item": [
+						{
+							"name": "getSalonRoleList",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/salon_role",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"salon_role"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getSalonRoleById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/salon_role/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"salon_role",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteSalonRole",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/salon_role/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"salon_role",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "invitationToAutoSalon",
+					"item": [
+						{
+							"name": "listInvittation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/invitation_to_auto_salon",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"invitation_to_auto_salon"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "createInvitationToAutoSalon",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/invitation_to_auto_salon",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"invitation_to_auto_salon"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "approveInvitation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/invitation_to_auto_salon/:id/approved",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"invitation_to_auto_salon",
+										":id",
+										"approved"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteInvitation",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/invitation_to_auto_salon/delete/invitation/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"invitation_to_auto_salon",
+										"delete",
+										"invitation",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "autoSalonListings",
+					"item": [
+						{
+							"name": "createListingAddPhoto",
+							"item": [
+								{
+									"name": "createAutoSalonListing",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/auto_salon_listing",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auto_salon_listing"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "addPhotoToListingAutoSalon",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": []
+										},
+										"url": {
+											"raw": "{{host}}/auto_salon_listing/photo/:id",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auto_salon_listing",
+												"photo",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": ""
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "inactiveAutoSalonListing",
+							"item": [
+								{
+									"name": "getAutoSalonInactiveListing",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/auto_salon_listing/inactive",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auto_salon_listing",
+												"inactive"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "deleteInactiveAutoSalonListing",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{access}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/auto_salon_listing/inactive/delete/:id",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"auto_salon_listing",
+												"inactive",
+												"delete",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": ""
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "getAllAutoSalonListing",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon_listing",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon_listing"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAutoSalonListingById",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon_listing/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon_listing",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "fullUpdateAutoSalonListing",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/auto_salon_listing/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon_listing",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "deleteAutoSalonListingById",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/auto_salon_listing/:id",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"auto_salon_listing",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "chat",
+			"item": [
+				{
+					"name": "getAllChatRoomsList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/chat",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"chat"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getChatRoomById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/chat/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"chat",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMessageById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/chat/messages/delete/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"chat",
+								"messages",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteChatRoomById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/chat/delete/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"chat",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "host",
+			"value": "localhost/api",
+			"type": "default"
+		},
+		{
+			"key": "access",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "websocket_token",
+			"value": "",
+			"type": "string"
+
+		}
+	]
+}

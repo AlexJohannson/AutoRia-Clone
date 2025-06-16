@@ -37,10 +37,13 @@ class CanManageSalonRole(BasePermission):
         if user_role.role == 'admin':
             if target_role.user == user:
                 return True
-            return target_role.role in ['seller', 'mechanic']
+            return target_role.role in ['seller', 'mechanic', 'superuser']
 
 
         if user_role.role in ['seller', 'mechanic']:
             return target_role.user == user
 
         return False
+
+
+

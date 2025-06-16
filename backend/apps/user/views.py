@@ -80,7 +80,7 @@ class UserBlockUnblockView(GenericAPIView):
         patch:
             block and unblock user by id
     """
-
+    permission_classes = [IsAdminOrSuperuser]
     def get_serializer(self):
         return None
 
